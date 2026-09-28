@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <meta content="noindex, nofollow" name="robots"/>
+  <meta content="课程练习：个人介绍、技能与作品门户。" name="description"/>
+  <title>
+   我的个人主页
+  </title>
+  <link href="assets/favicon.svg" rel="icon" type="image/svg+xml"/>
+  <!-- 主样式表：包含亮/暗双主题的层叠样式表变量 -->
+  <link href="styles.css" rel="stylesheet"/>
+ </head>
+ <body>
+
+  <!-- ============================================================ -->
+  <!-- === 0. 基础设施层：页面加载动画 + 鼠标粒子画布 ===               -->
+  <!-- 说明：这两个是视觉装饰层，一般不用改。                              -->
+  <!--   搜索关键字：page-loader（加载动画层）、particle-canvas（粒子画布） -->
+  <!-- ============================================================ -->
+
+  <!-- ======== 页面加载动画 ======== -->
+  <div class="page-loader" id="page-loader">
+   <div class="loader-content">
+    <div class="loader-ring"></div>
+    <span class="loader-text">HE RUI</span>
+   </div>
+  </div>
+
+  <!-- ======== 鼠标粒子拖尾画布 ======== -->
+  <canvas class="particle-canvas" id="particle-canvas" aria-hidden="true"></canvas>
+
+  <a class="skip-link" href="#main">
+   跳到正文
+  </a>
+
+  <!-- ============================================================ -->
+  <!-- === 1. 顶部导航栏 (改菜单名字) ===                               -->
+  <!-- 搜索关键字：site-header / 主导航 / nav                           -->
+  <!-- 维护提示：                                                        -->
+  <!--   改品牌名文字      → <a class="brand"> 里的 "我的主页"           -->
+  <!--   增减菜单项        → <nav>（导航）里的 <a href="#xxx">...</a>    -->
+  <!--   改主题切换图标    → 不用改本文件，交互脚本会自动切换 🌙/☀️        -->
+  <!-- ============================================================ -->
+  <header class="site-header">
+   <div class="container header-inner">
+    <a class="brand" href="#about">
+     我的主页
+    </a>
+    <nav aria-label="主导航">
+     <a href="#about">
+      关于
+     </a>
+     <a href="#experience">
+      经历
+     </a>
+     <a href="#projects">
+      项目
+     </a>
+     <a href="#skills">
+      技能
+     </a>
+     <a href="#portfolio">
+      作品
+     </a>
+     <a href="#teaching">
+      学习
+     </a>
+     <a href="#publications">
+      记录
+     </a>
+     <!-- 亮/暗主题切换按钮 -->
+     <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换亮暗主题">
+      🌙
+     </button>
+    </nav>
+   </div>
+  </header>
+  <!-- ======== 导航栏 结束 ======== -->
+
+  <!-- 辅助：顶部滚动进度条（交互脚本自动根据滚动位置填充宽度，不用改） -->
+  <div class="scroll-progress" aria-hidden="true"></div>
+
+  <main id="main">
+
+   <!-- 装饰层：背景渐变光斑 + 网格线（纯样式画的，不用改） -->
+   <div class="bg-blob blob-1" aria-hidden="true"></div>
+   <div class="bg-blob blob-2" aria-hidden="true"></div>
+   <div class="bg-blob blob-3" aria-hidden="true"></div>
+   <div class="bg-grid" aria-hidden="true"></div>
+
+   <!-- ============================================================ -->
+   <!-- === 2. 首屏个人简介 (改名字、头像、标签) ===                     -->
+   <!-- 搜索关键字：hero / hero-copy / hero-visual / hero-marquee        -->
+   <!-- 维护提示：                                                        -->
+   <!--   改中文名字        → <h1> 里的 "何锐"                            -->
+   <!--   改英文名字        → <h1><span> 里的 "He Rui"                    -->
+   <!--   换头像            → <img> 标签里的图片地址                       -->
+   <!--   改技能标签        → <div class="skill-tags"> 里的 <span>         -->
+   <!--   改学校            → <p class="hero-school">                     -->
+   <!--   改时钟显示        → 不用改本文件，交互脚本每秒自动更新           -->
+   <!--   改轮播文字        → 去交互脚本里的 phrases 数组改                -->
+   <!--   改学习方向描述    → <div class="research-direction"> 里的 <p>    -->
+   <!-- ============================================================ -->
+   <section class="hero" id="about">
+    <div class="container">
+     <div class="hero-top">
+      <div class="hero-copy">
+       <h1>
+        何锐
+        <span>
+         He Rui
+        </span>
+       </h1>
+       <!-- 技能标签 -->
+       <div class="skill-tags" aria-label="核心技能">
+        <span>HTML5</span>
+        <span>CSS3</span>
+        <span>JavaScript</span>
+       </div>
+       <div class="hero-marquee" id="hero-marquee">
+        <div class="marquee-track" id="marquee-track"></div>
+       </div>
+       <p class="hero-school">
+        广东科学技术职业学院 · 25大模型应用产业学院班
+       </p>
+       <div class="hero-clock" id="hero-clock">
+        <span class="clock-icon">🕐</span>
+        <span class="clock-date" id="clock-date">—</span>
+        <span class="clock-time" id="clock-time">—</span>
+        <span class="clock-tip">刷新页面会加载上次主题</span>
+       </div>
+      </div>
+      <div class="hero-visual">
+       <figure>
+        <img alt="个人头像" height="220" src="assets/奶龙.png" width="220"/>
+       </figure>
+      </div>
+     </div>
+
+     <!-- === 2b. 学习方向横条（改方向描述） === -->
+     <div class="research-direction" id="research-direction">
+      <span class="eyebrow">
+       学习方向
+      </span>
+      <p>
+       HTML5、CSS3、JavaScript，正在学习 Git、数据库与网站部署。
+      </p>
+     </div>
+
+     <!-- ============================================================ -->
+     <!-- === 3. 2x2 基本信息网格 (改电话、城市) ===                       -->
+     <!-- 搜索关键字：profile-details                                       -->
+     <!-- 维护提示：                                                        -->
+     <!--   每块结构都一样，直接改里面的文字就行：                             -->
+     <!--     第一个 <span>  = 表情图标（可换）                               -->
+     <!--     第二个 <span>  = 小标题（如"所在城市"）                         -->
+     <!--     <p>            = 内容（如"广东珠海"）                           -->
+     <!--   要加新格子 → 复制一个 <div>...</div>，样式会自动排成网格          -->
+     <!-- ============================================================ -->
+     <div class="profile-details">
+
+      <!-- 信息格 1：学习阶段 -->
+      <div>
+       <span class="info-icon">🎓</span>
+       <span>
+        学习阶段
+       </span>
+       <p>
+        在校学习
+       </p>
+      </div>
+
+      <!-- 信息格 2：所在城市 -->
+      <div>
+       <span class="info-icon">🏙️</span>
+       <span>
+        所在城市
+       </span>
+       <p>
+        广东珠海
+       </p>
+      </div>
+
+      <!-- 信息格 3：联系电话 -->
+      <div>
+       <span class="info-icon">📞</span>
+       <span>
+        联系我
+       </span>
+       <p>
+        15818772981
+       </p>
+      </div>
+
+      <!-- 信息格 4：学校地址 -->
+      <div>
+       <span class="info-icon">📍</span>
+       <span>
+        学校地址
+       </span>
+       <p>
+        广东省珠海市金湾区珠海大道南侧65号
+       </p>
+      </div>
+
+     </div>
+    </div>
+   </section>
+   <!-- ======== 个人简介区 结束 ======== -->
+
+   <!-- ============================================================ -->
+   <!-- === 4. 教育与工作经历 (时间线布局) ===                           -->
+   <!-- 搜索关键字：section-timeline / timeline / timeline-item          -->
+   <!-- 维护提示：                                                        -->
+   <!--   加新经历 → 复制整个 <article class="timeline-item">...</article>   -->
+   <!--   改标题   → <h3> 里的文字                                         -->
+   <!--   改时间   → <time class="timeline-time">                          -->
+   <!--   改描述   → <p class="timeline-desc">                             -->
+   <!--   改课程标签 → <div class="course-pills"> 里的 <span class="pill">  -->
+   <!--   区块编号 01 是标题装饰用的，不用改                                 -->
+   <!-- ============================================================ -->
+   <section class="section section-timeline" id="experience">
+    <div class="container">
+     <header class="section-heading">
+      <!-- 标题装饰：左侧渐变竖线 + 区块编号 -->
+      <span class="section-num">01</span>
+      <h2>
+       教育与工作经历
+      </h2>
+     </header>
+
+     <!-- 时间线容器：左侧有竖线和节点 -->
+     <div class="timeline">
+
+      <!-- 经历项 1：广东科学技术职业学院 -->
+      <article class="timeline-item reveal">
+       <!-- 时间线节点：圆点 + 外圈光环 -->
+       <span class="timeline-node" aria-hidden="true"></span>
+       <div class="timeline-card">
+        <header class="timeline-head">
+         <h3>
+          广东科学技术职业学院 · 人工智能技术应用
+         </h3>
+         <time class="timeline-time">2025.09 — 在读</time>
+        </header>
+        <p class="timeline-desc">
+         主修前端开发、数据库原理、Web 部署、Git 版本控制、大模型基础等课程，跟随项目实战学习网页开发技术栈。
+        </p>
+        <div class="course-pills" aria-label="主修课程">
+         <span class="pill">前端开发</span>
+         <span class="pill">数据库原理</span>
+         <span class="pill">Web 部署</span>
+         <span class="pill">Git 版本控制</span>
+         <span class="pill">大模型基础</span>
+        </div>
+       </div>
+      </article>
+
+     </div>
+    </div>
+   </section>
+   <!-- ======== 教育与工作经历区 结束 ======== -->
+
+   <!-- ============================================================ -->
+   <!-- === 5. 项目经历 (卡片网格布局) ===                               -->
+   <!-- 搜索关键字：section-projects / project-grid / project-card        -->
+   <!-- 维护提示：                                                        -->
+   <!--   加新项目 → 复制整个 <article class="project-card">...</article>   -->
+   <!--   改项目名 → <h3>                                                  -->
+   <!--   改描述   → <p class="project-desc">                              -->
+   <!--   改技术标签 → <div class="project-meta-lines"> 里的 <span>        -->
+   <!--   改链接   → <a class="project-link" href="...">                    -->
+   <!--   改徽章   → <span class="project-badge badge-xxx">                 -->
+   <!--   改顶色条 → <div class="project-top-bar bar-xxx">                 -->
+   <!--   区块编号 02 是装饰用的，不用改                                    -->
+   <!-- ============================================================ -->
+   <section class="section section-projects" id="projects">
+    <div class="container">
+     <header class="section-heading">
+      <span class="section-num">02</span>
+      <h2>
+       项目经历
+      </h2>
+      <p class="section-sub">
+       作品集 · FEATURED PROJECTS
+      </p>
+     </header>
+
+     <!-- 项目卡片网格：2 列布局 -->
+     <div class="project-grid">
+
+      <!-- 项目卡片 1：个人主页 -->
+      <article class="project-card reveal project-tagged">
+       <span class="project-badge badge-course">课程练习</span>
+       <div class="project-top-bar bar-blue"></div>
+       <div class="project-body">
+        <h3>个人主页</h3>
+        <p class="project-desc">项目内容：制作自己的网页，展示资料与作品，记录修改、测试与发布过程。</p>
+        <div class="project-meta-lines">
+         <span class="meta-line">网页内容：超文本标记结构、图片、链接</span>
+         <span class="meta-line">页面样式：层叠样式字体、颜色、响应式布局</span>
+         <span class="meta-line">开发过程：脚本语言、Git、检查与部署</span>
+        </div>
+        <a class="project-link" href="#about">查看项目 →</a>
+       </div>
+      </article>
+
+      <!-- 项目卡片 2：待补充 -->
+      <article class="project-card reveal project-tagged">
+       <span class="project-badge badge-practice">练习</span>
+       <div class="project-top-bar bar-gray"></div>
+       <div class="project-body">
+        <h3>待补充：下一个项目</h3>
+        <p class="project-desc">后续在这里放你的真实项目，比如博客、管理后台、小程序等。</p>
+        <div class="project-meta-lines">
+         <span class="meta-line">规划中</span>
+        </div>
+        <a class="project-link project-link-disabled" href="#" aria-disabled="true">敬请期待 →</a>
+       </div>
+      </article>
+
+     </div>
+    </div>
+   </section>
+   <!-- ======== 项目经历区 结束 ======== -->
+
+   <!-- ============================================================ -->
+   <!-- === 6. 技能与实践 (3 列文本卡) ===                              -->
+   <!-- 搜索关键字：section-skills / skill-3col / skill-col               -->
+   <!-- 维护提示：                                                        -->
+   <!--   改标题 → <h3>                                                    -->
+   <!--   改描述 → <p>                                                     -->
+   <!--   加新列 → 复制 <div class="skill-col reveal">...</div>             -->
+   <!--   样式会自动分配 3 列（桌面）→ 2 列（平板）→ 1 列（手机）            -->
+   <!--   区块编号 03 是装饰用的，不用改                                    -->
+   <!-- ============================================================ -->
+   <section class="section section-skills" id="skills">
+    <div class="container">
+     <header class="section-heading">
+      <span class="section-num">03</span>
+      <h2>
+       技能与实践
+      </h2>
+     </header>
+
+     <div class="skill-3col">
+
+      <!-- 技能列 1：网页内容 -->
+      <div class="skill-col reveal">
+       <h3>网页内容</h3>
+       <p>超文本标记结构、图片、链接。</p>
+      </div>
+
+      <!-- 技能列 2：页面样式 -->
+      <div class="skill-col reveal">
+       <h3>页面样式</h3>
+       <p>层叠样式字体、颜色、响应式布局。</p>
+      </div>
+
+      <!-- 技能列 3：开发过程 -->
+      <div class="skill-col reveal">
+       <h3>开发过程</h3>
+       <p>脚本语言、Git、检查与部署。</p>
+      </div>
+
+     </div>
+    </div>
+   </section>
+   <!-- ======== 技能与实践区 结束 ======== -->
+
+   <!-- ============================================================ -->
+   <!-- === 7. 作品门户 (点击可跳转的作品卡片) ===                       -->
+   <!-- 搜索关键字：portfolio / portfolio-list / work-card               -->
+   <!-- 维护提示：                                                        -->
+   <!--   加新作品 → 复制整个 <li class="work-card">...</li>                -->
+   <!--   改链接   → <a href="xxx.html" target="_blank">                    -->
+   <!--   改封面图 → <img> 里的图片地址                                     -->
+   <!--   改标题   → <h3>                                                   -->
+   <!--   改描述   → <p>                                                    -->
+   <!--   区块编号 04 是装饰用的，不用改                                    -->
+   <!-- ============================================================ -->
+   <section class="section" id="portfolio">
+    <div class="container">
+     <header class="section-heading">
+      <span class="section-num">04</span>
+      <h2>
+       作品门户
+      </h2>
+      <p class="works-notice">
+       以下是我的真实作品，点击卡片可在新窗口中打开。
+      </p>
+     </header>
+     <ol class="portfolio-list">
+
+      <!-- 作品卡片 1：饮食控制助手 -->
+      <li class="work-card work-diet-control reveal">
+       <a href="diet-control/index.html" rel="noopener noreferrer" target="_blank">
+        <div class="work-cover">
+         <img alt="饮食控制助手 · AI 智能识别 · 作品封面" decoding="async" height="800" src="assets/work-diet-control.png" width="1200"/>
+        </div>
+        <div class="work-copy">
+         <h3>
+          饮食控制助手 · AI 智能识别
+         </h3>
+         <p>
+          拍照识别菜品、科学计算热量、每日饮食记录。
+         </p>
+        </div>
+       </a>
+      </li>
+
+      <!-- 作品卡片 2：四级单词 -->
+      <li class="work-card work-cet4-vocab reveal">
+       <a href="cet4-vocab.html" rel="noopener noreferrer" target="_blank">
+        <div class="work-cover">
+         <img alt="深夜书房 · 四级单词 · 作品封面" decoding="async" height="800" src="assets/work-cet4-vocab.png" width="1200"/>
+        </div>
+        <div class="work-copy">
+         <h3>
+          深夜书房 · 四级单词
+         </h3>
+         <p>
+          每日背诵清单、复习默写、词库管理的四六级备考工具。
+         </p>
+        </div>
+       </a>
+      </li>
+
+     </ol>
+    </div>
+   </section>
+   <!-- ======== 作品门户区 结束 ======== -->
+
+   <!-- ============================================================ -->
+   <!-- === 8. 学习与实践 (目标步骤卡) ===                              -->
+   <!-- 搜索关键字：section-teaching / goal-grid / goal-card             -->
+   <!-- 维护提示：                                                        -->
+   <!--   加新目标 → 复制整个 <article class="goal-card">...</article>      -->
+   <!--   改编号   → <span class="goal-num">0X</span>                       -->
+   <!--   改标题   → <h3>                                                   -->
+   <!--   改描述   → <p>                                                    -->
+   <!--   区块编号 05 是装饰用的，不用改                                    -->
+   <!-- ============================================================ -->
+   <section class="section section-teaching" id="teaching">
+    <div class="container">
+     <header class="section-heading">
+      <span class="section-num">05</span>
+      <h2>
+       学习与实践
+      </h2>
+      <p class="section-sub">
+       本学期目标，一步一个脚印 🎯
+      </p>
+     </header>
+
+     <!-- 步骤卡片：大编号 + 标题 + 描述 -->
+     <div class="goal-grid">
+
+      <!-- 目标 1 -->
+      <article class="goal-card reveal">
+       <span class="goal-num">01</span>
+       <div class="goal-body">
+        <h3>每次课完成可运行的小改动</h3>
+        <p>不追求大而全，每节课至少输出一个可被别人访问的小作品，积累作品集。</p>
+       </div>
+      </article>
+
+      <!-- 目标 2 -->
+      <article class="goal-card reveal">
+       <span class="goal-num">02</span>
+       <div class="goal-body">
+        <h3>能解释自己写的每一行代码</h3>
+        <p>超文本标记的每个标签、层叠样式的每条规则、脚本的每个函数都要能说出用途。</p>
+       </div>
+      </article>
+
+      <!-- 目标 3 -->
+      <article class="goal-card reveal">
+       <span class="goal-num">03</span>
+       <div class="goal-body">
+        <h3>用 Git 管理所有学习成果</h3>
+        <p>建立个人 GitHub 仓库，每次作业都提交，学会版本回滚和分支协作。</p>
+       </div>
+      </article>
+
+      <!-- 目标 4 -->
+      <article class="goal-card reveal">
+       <span class="goal-num">04</span>
+       <div class="goal-body">
+        <h3>部署一个公开可访问的网站</h3>
+        <p>通过 GitHub Pages 或 Vercel，让自己的作品能在公网上被任何人访问。</p>
+       </div>
+      </article>
+
+     </div>
+    </div>
+   </section>
+   <!-- ======== 学习与实践区 结束 ======== -->
+
+   <!-- ============================================================ -->
+   <!-- === 9. 学习记录 (日志卡片列表) ===                              -->
+   <!-- 搜索关键字：section-publications / log-list / log-item           -->
+   <!-- 维护提示：                                                        -->
+   <!--   加新记录 → 复制整个 <article class="log-item">...</article>       -->
+   <!--   改日期   → <time class="log-date">                               -->
+   <!--   改标题   → <h3>                                                   -->
+   <!--   改描述   → <p>                                                    -->
+   <!--   区块编号 06 是装饰用的，不用改                                    -->
+   <!-- ============================================================ -->
+   <section class="section section-publications" id="publications">
+    <div class="container">
+     <header class="section-heading">
+      <span class="section-num">06</span>
+      <h2>
+       学习记录
+      </h2>
+      <p class="section-sub">
+       一路走来，感谢每一次坚持 📖
+      </p>
+     </header>
+
+     <!-- 日志列表：每条一个小卡片 -->
+     <div class="log-list">
+
+      <!-- 记录 1 -->
+      <article class="log-item reveal">
+       <time class="log-date">2025.09</time>
+       <div class="log-dot"></div>
+       <div class="log-content">
+        <h3>完成第一张个人主页</h3>
+        <p>从零搭建超文本骨架，学会使用开发者工具调试样式，首次体验 Git 提交。</p>
+       </div>
+      </article>
+
+      <!-- 记录 2 -->
+      <article class="log-item reveal">
+       <time class="log-date">2025.10</time>
+       <div class="log-dot"></div>
+       <div class="log-content">
+        <h3>独立开发饮食控制助手</h3>
+        <p>全栈项目练手，从数据库设计到前端页面，踩了无数坑但收获满满。</p>
+       </div>
+      </article>
+
+      <!-- 记录 3 -->
+      <article class="log-item reveal">
+       <time class="log-date">2025.11</time>
+       <div class="log-dot"></div>
+       <div class="log-content">
+        <h3>掌握亮暗主题切换技术</h3>
+        <p>学会用层叠样式变量管理主题色，实现一键切换亮暗模式的完整方案。</p>
+       </div>
+      </article>
+
+      <!-- 记录 4：占位 -->
+      <article class="log-item reveal">
+       <time class="log-date">敬请期待</time>
+       <div class="log-dot"></div>
+       <div class="log-content">
+        <h3>更多成果持续更新中...</h3>
+        <p>下一个项目正在路上，欢迎常来看看 ✨</p>
+       </div>
+      </article>
+
+     </div>
+    </div>
+   </section>
+   <!-- ======== 学习记录区 结束 ======== -->
+
+  </main>
+
+  <!-- ============================================================ -->
+  <!-- === 10. 页脚 (导航链接 + 访客计数 + 版权) ===                     -->
+  <!-- 搜索关键字：footer / footer-inner                                 -->
+  <!-- 维护提示：                                                        -->
+  <!--   改导航链接 → <div class="footer-left"> 里的 <a>                  -->
+  <!--   改版权文字 → <span class="copyright">                            -->
+  <!--   访客计数   → 不用改本文件，交互脚本用浏览器本地存储自动累加       -->
+  <!-- ============================================================ -->
+  <footer>
+   <div class="container footer-inner">
+    <div class="footer-left">
+     <a href="#about">回到顶部</a>
+     <a href="#portfolio">作品门户</a>
+    </div>
+    <div class="footer-right">
+     <span class="visitor-count">👋 你是第 <b id="visitor-num">1</b> 位访客</span>
+     <span class="copyright">© 2026 何锐 · Made with ❤️</span>
+    </div>
+   </div>
+  </footer>
+  <!-- ======== 页脚 结束 ======== -->
+
+  <!-- 返回顶部悬浮按钮（交互脚本控制显示/隐藏，不用改本文件） -->
+  <button class="back-to-top" id="back-to-top" type="button" aria-label="返回顶部">
+   <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="12" y1="19" x2="12" y2="5"></line>
+    <polyline points="5 12 12 5 19 12"></polyline>
+   </svg>
+  </button>
+
+  <!-- 主题切换 + 滚动入场动画脚本 -->
+  <script src="script.js"></script>
+ </body>
+</html>
